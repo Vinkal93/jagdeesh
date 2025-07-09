@@ -4,12 +4,831 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Calculator Suite - Developed by Jagdeesh Dubey</title>
-    <link rel="stylesheet" href="styles.css">
+    <!-- <link rel="stylesheet" href="styles.css"> -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+<style>
+    * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary-orange: #f97316;
+  --primary-orange-hover: #ea580c;
+  --primary-orange-shadow: rgba(249, 115, 22, 0.3);
+
+  /* Light theme */
+  --bg-gradient-start: #fff7ed;
+  --bg-gradient-middle: #ffffff;
+  --bg-gradient-end: #fff7ed;
+  --bg-circle-1: rgba(249, 115, 22, 0.2);
+  --bg-circle-2: rgba(249, 115, 22, 0.15);
+
+  --card-bg: rgba(255, 255, 255, 0.3);
+  --card-border: rgba(255, 255, 255, 0.2);
+  --card-shadow: rgba(0, 0, 0, 0.1);
+
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+
+  --button-number-bg: rgba(255, 255, 255, 0.4);
+  --button-number-hover: rgba(255, 255, 255, 0.6);
+  --button-number-border: rgba(255, 255, 255, 0.3);
+
+  --button-function-bg: rgba(0, 0, 0, 0.1);
+  --button-function-hover: rgba(0, 0, 0, 0.2);
+  --button-function-border: rgba(0, 0, 0, 0.2);
+
+  --input-bg: rgba(255, 255, 255, 0.4);
+  --input-border: rgba(255, 255, 255, 0.3);
+  --input-placeholder: #9ca3af;
+
+  --sidebar-bg: rgba(255, 255, 255, 0.7);
+  --sidebar-border: rgba(255, 255, 255, 0.2);
+  --sidebar-blur: blur(24px);
+  --overlay-bg: rgba(0,0,0,0.45);
+}
+
+[data-theme="dark"] {
+  /* Dark theme */
+  --bg-gradient-start: #111827;
+  --bg-gradient-middle: #1f2937;
+  --bg-gradient-end: #000000;
+  --bg-circle-1: rgba(249, 115, 22, 0.2);
+  --bg-circle-2: rgba(59, 130, 246, 0.15);
+
+  --card-bg: rgba(0, 0, 0, 0.4);
+  --card-border: rgba(255, 255, 255, 0.08);
+  --card-shadow: rgba(0, 0, 0, 0.7);
+
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-muted: rgba(255, 255, 255, 0.5);
+
+  --button-number-bg: rgba(255, 255, 255, 0.08);
+  --button-number-hover: rgba(255, 255, 255, 0.15);
+  --button-number-border: rgba(255, 255, 255, 0.1);
+
+  --button-function-bg: rgba(255, 255, 255, 0.08);
+  --button-function-hover: rgba(255, 255, 255, 0.18);
+  --button-function-border: rgba(255, 255, 255, 0.12);
+
+  --input-bg: rgba(255, 255, 255, 0.08);
+  --input-border: rgba(255, 255, 255, 0.12);
+  --input-placeholder: rgba(255, 255, 255, 0.5);
+
+  --sidebar-bg: rgba(17, 24, 39, 0.95);
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-blur: blur(24px);
+  --overlay-bg: rgba(0,0,0,0.7);
+}
+
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-middle), var(--bg-gradient-end));
+  min-height: 100vh;
+  color: var(--text-primary);
+  overflow-x: hidden;
+  transition: background 0.5s, color 0.5s;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
+/* Background Decoration */
+.bg-decoration {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bg-circle {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  transition: all 0.5s ease;
+}
+
+.bg-circle-1 {
+  top: 80px;
+  right: 80px;
+  width: 384px;
+  height: 384px;
+  background: var(--bg-circle-1);
+}
+
+.bg-circle-2 {
+  bottom: 80px;
+  left: 80px;
+  width: 320px;
+  height: 320px;
+  background: var(--bg-circle-2);
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 320px;
+  max-width: 90vw;
+  height: 100vh;
+  background: var(--sidebar-bg);
+  backdrop-filter: var(--sidebar-blur);
+  -webkit-backdrop-filter: var(--sidebar-blur);
+  border-right: 1px solid var(--sidebar-border);
+  box-shadow: 0 25px 50px var(--card-shadow);
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+.sidebar.open {
+  transform: translateX(0);
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 24px 16px 24px;
+  border-bottom: 1px solid var(--sidebar-border);
+  background: transparent;
+}
+
+.sidebar-header h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 22px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.close-btn:hover {
+  color: var(--text-primary);
+  background: var(--button-function-hover);
+  transform: scale(1.1);
+}
+
+.menu-items {
+  flex: 1;
+  padding: 16px 0 0 0;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.menu-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 24px;
+  margin-bottom: 6px;
+  background: none;
+  border: none;
+  border-radius: 12px;
+  color: var(--text-secondary);
+  font-size: 17px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+  text-align: left;
+  outline: none;
+}
+
+.menu-item:hover, .menu-item:focus-visible {
+  color: var(--text-primary);
+  background: var(--button-function-hover);
+  transform: scale(1.02);
+}
+
+.menu-item.active {
+  background: var(--primary-orange);
+  color: #fff;
+  box-shadow: 0 8px 25px var(--primary-orange-shadow);
+}
+
+.menu-item i {
+  width: 22px;
+  font-size: 19px;
+}
+
+.sidebar-footer {
+  padding: 16px 24px 20px 24px;
+  border-top: 1px solid var(--sidebar-border);
+  background: transparent;
+}
+
+.footer-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  background: none;
+  border: none;
+  border-radius: 12px;
+  color: var(--text-secondary);
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+  text-align: left;
+  outline: none;
+}
+
+.footer-btn:hover, .footer-btn:focus-visible {
+  color: var(--text-primary);
+  background: var(--button-function-hover);
+  transform: scale(1.02);
+}
+
+.developer-info {
+  padding: 12px 0 0 0;
+  margin-top: 8px;
+  background: none;
+  border: none;
+  border-radius: 12px;
+  backdrop-filter: none;
+}
+
+.developer-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  color: var(--primary-orange);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.developer-info p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.version-info {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--primary-orange);
+  font-size: 12px;
+}
+
+/* Overlay */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--overlay-bg);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s;
+  z-index: 90;
+}
+
+.overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Main Content */
+.main-content {
+  position: relative;
+  z-index: 10;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 16px 8px 16px;
+  flex-shrink: 0;
+  background: transparent;
+}
+
+.menu-btn {
+  background: var(--button-function-bg);
+  border: 1px solid var(--button-function-border);
+  color: var(--text-secondary);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+  backdrop-filter: blur(10px);
+  font-size: 20px;
+  outline: none;
+}
+
+.menu-btn:hover, .menu-btn:focus-visible {
+  color: var(--text-primary);
+  background: var(--button-function-hover);
+  transform: scale(1.1);
+}
+
+.header h1 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-align: center;
+  flex: 1;
+}
+
+.spacer {
+  width: 48px;
+}
+
+/* Calculator Container */
+.calculator-container {
+  flex: 1;
+  padding: 0 16px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+  min-width: 0;
+}
+
+.calculator {
+  display: none;
+  width: 100%;
+  max-width: 420px;
+  height: 100%;
+  max-height: calc(100vh - 100px);
+  min-width: 0;
+}
+
+.calculator.active {
+  display: block;
+}
+
+.calculator-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--card-border);
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 25px 50px var(--card-shadow);
+  transition: box-shadow 0.3s, background 0.3s;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* Basic Calculator Specific */
+.calculator-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+.history-btn {
+  background: var(--button-function-bg);
+  border: 1px solid var(--button-function-border);
+  color: var(--text-secondary);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+}
+
+.history-btn:hover {
+  color: var(--text-primary);
+  background: var(--button-function-hover);
+  transform: scale(1.1);
+}
+
+.history-panel {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 16px;
+  backdrop-filter: blur(10px);
+  display: none;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.history-panel.active {
+  display: block;
+}
+
+.history-panel h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+.history-list {
+  font-size: 12px;
+}
+
+.no-history {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.history-item {
+  margin-bottom: 8px;
+}
+
+.history-expression {
+  color: var(--text-secondary);
+}
+
+.history-result {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.expression-display {
+  text-align: right;
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  min-height: 20px;
+}
+
+.main-display {
+  text-align: right;
+  font-size: 48px;
+  font-weight: 300;
+  color: var(--text-primary);
+  margin-bottom: 32px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  word-break: break-all;
+  line-height: 1.1;
+}
+
+.main-display:hover {
+  color: var(--primary-orange);
+}
+
+.button-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  flex: 1;
+}
+
+.calc-btn {
+  height: 64px;
+  border-radius: 16px;
+  font-size: 20px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.calc-btn:active {
+  transform: scale(0.95);
+}
+
+.calc-btn:hover {
+  transform: scale(1.05);
+}
+
+.number-btn {
+  background: var(--button-number-bg);
+  border: 1px solid var(--button-number-border);
+  color: var(--text-primary);
+}
+
+.number-btn:hover {
+  background: var(--button-number-hover);
+}
+
+.function-btn {
+  background: var(--button-function-bg);
+  border: 1px solid var(--button-function-border);
+  color: var(--text-primary);
+}
+
+.function-btn:hover {
+  background: var(--button-function-hover);
+}
+
+.operator-btn,
+.equals-btn {
+  background: var(--primary-orange);
+  border: 1px solid rgba(249, 115, 22, 0.3);
+  color: white;
+  box-shadow: 0 8px 25px var(--primary-orange-shadow);
+}
+
+.operator-btn:hover,
+.equals-btn:hover {
+  background: var(--primary-orange-hover);
+}
+
+.zero-btn {
+  grid-column: span 2;
+}
+
+/* Other Calculators */
+.input-group {
+  margin-bottom: 24px;
+}
+
+.input-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.input-group input,
+.input-group select {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 12px;
+  font-size: 16px;
+  color: var(--text-primary);
+  backdrop-filter: blur(10px);
+  transition: all 0.2s ease;
+}
+
+.input-group input::placeholder {
+  color: var(--input-placeholder);
+}
+
+.input-group input:focus,
+.input-group select:focus {
+  outline: none;
+  border-color: var(--primary-orange);
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+}
+
+.time-inputs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.time-inputs input {
+  text-align: center;
+}
+
+.convert-btn {
+  width: 100%;
+  height: 48px;
+  background: var(--primary-orange);
+  border: 1px solid rgba(249, 115, 22, 0.3);
+  border-radius: 12px;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 8px 25px var(--primary-orange-shadow);
+  margin-bottom: 24px;
+}
+
+.convert-btn:hover {
+  background: var(--primary-orange-hover);
+  transform: scale(1.02);
+}
+
+.convert-btn:active {
+  transform: scale(0.98);
+}
+
+.result-panel {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 16px;
+  backdrop-filter: blur(10px);
+  text-align: center;
+  display: none;
+}
+
+.result-panel.active {
+  display: block;
+}
+
+.result-title {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.result-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.result-unit {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.loan-results {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.loan-result-item {
+  text-align: center;
+}
+
+.loan-result-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.loan-result-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Mobile Optimizations */
+@media (max-width: 900px) {
+  .sidebar {
+    width: 260px;
+    max-width: 90vw;
+  }
+  .calculator-card {
+    padding: 18px;
+  }
+  .main-display {
+    font-size: 36px;
+  }
+}
+
+@media (max-width: 600px) {
+  .sidebar {
+    width: 90vw;
+    max-width: 98vw;
+    min-width: 0;
+    padding-right: 0;
+  }
+  .sidebar-header, .sidebar-footer {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .menu-item {
+    padding-left: 16px;
+    padding-right: 16px;
+    font-size: 16px;
+  }
+  .calculator-card {
+    padding: 12px;
+    border-radius: 16px;
+  }
+  .main-display {
+    font-size: 28px;
+  }
+  .calc-btn {
+    height: 44px;
+    font-size: 16px;
+    border-radius: 10px;
+  }
+  .button-grid {
+    gap: 7px;
+  }
+  .bg-circle-1, .bg-circle-2 {
+    width: 120px;
+    height: 120px;
+  }
+}
+
+@media (max-width: 400px) {
+  .sidebar {
+    width: 100vw;
+    min-width: 0;
+  }
+  .calculator-card {
+    padding: 6px;
+    border-radius: 10px;
+  }
+  .main-display {
+    font-size: 18px;
+  }
+}
+
+/* Prevent zoom on input focus */
+@media (max-width: 768px) {
+  input[type="number"],
+  input[type="text"],
+  select {
+    font-size: 16px !important;
+  }
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  background: transparent;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-orange);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-orange-hover);
+}
+
+/* Animation classes */
+.fade-in {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.scale-in {
+  animation: scaleIn 0.2s ease;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+</style>
 <body>
     <!-- Background Decoration -->
     <div class="bg-decoration">
@@ -324,6 +1143,633 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <!-- <script src="script.js"></script> -->
+    
+    <script>
+        class CalculatorApp {
+  constructor() {
+    this.currentCalculator = "basic"
+    this.isDark = localStorage.getItem("calculator-theme") === "dark"
+    this.display = "0"
+    this.expression = ""
+    this.history = JSON.parse(localStorage.getItem("calculator-history") || "[]")
+    this.justCalculated = false
+    this.showHistory = false
+
+    this.init()
+  }
+
+  init() {
+    this.setupTheme()
+    this.setupEventListeners()
+    this.updateHistoryDisplay()
+    this.updateCalculatorTitle()
+  }
+
+  setupTheme() {
+    if (this.isDark) {
+      document.body.setAttribute("data-theme", "dark")
+      document.getElementById("themeIcon").className = "fas fa-sun"
+      document.getElementById("themeText").textContent = "Light Mode"
+    }
+  }
+
+  setupEventListeners() {
+    // Sidebar controls
+    document.getElementById("menuBtn").addEventListener("click", () => this.openSidebar())
+    document.getElementById("closeSidebar").addEventListener("click", () => this.closeSidebar())
+    document.getElementById("overlay").addEventListener("click", () => this.closeSidebar())
+
+    // Theme toggle
+    document.getElementById("themeToggle").addEventListener("click", () => this.toggleTheme())
+
+    // Menu items
+    document.querySelectorAll(".menu-item").forEach((item) => {
+      item.addEventListener("click", (e) => {
+        const calculator = e.currentTarget.getAttribute("data-calculator")
+        this.switchCalculator(calculator)
+      })
+    })
+
+    // Basic calculator
+    this.setupBasicCalculator()
+
+    // Other calculators
+    this.setupWeightCalculator()
+    this.setupLoanCalculator()
+    this.setupPercentageCalculator()
+    this.setupUnitConverter()
+    this.setupTemperatureConverter()
+    this.setupTimeCalculator()
+
+    // Prevent zoom on double tap
+    let lastTouchEnd = 0
+    document.addEventListener(
+      "touchend",
+      (event) => {
+        const now = new Date().getTime()
+        if (now - lastTouchEnd <= 300) {
+          event.preventDefault()
+        }
+        lastTouchEnd = now
+      },
+      false,
+    )
+  }
+
+  openSidebar() {
+    document.getElementById("sidebar").classList.add("open")
+    document.getElementById("overlay").classList.add("active")
+    document.body.style.overflow = "hidden"
+    // For mobile: focus trap
+    if(window.innerWidth < 700) {
+      setTimeout(()=>{
+        document.getElementById("sidebar").focus();
+      }, 100);
+    }
+  }
+
+  closeSidebar() {
+    document.getElementById("sidebar").classList.remove("open")
+    document.getElementById("overlay").classList.remove("active")
+    document.body.style.overflow = ""
+  }
+
+  toggleTheme() {
+    this.isDark = !this.isDark
+    localStorage.setItem("calculator-theme", this.isDark ? "dark" : "light")
+
+    if (this.isDark) {
+      document.body.setAttribute("data-theme", "dark")
+      document.getElementById("themeIcon").className = "fas fa-sun"
+      document.getElementById("themeText").textContent = "Light Mode"
+    } else {
+      document.body.removeAttribute("data-theme")
+      document.getElementById("themeIcon").className = "fas fa-moon"
+      document.getElementById("themeText").textContent = "Dark Mode"
+    }
+  }
+
+  switchCalculator(calculatorType) {
+    // Update active menu item
+    document.querySelectorAll(".menu-item").forEach((item) => {
+      item.classList.remove("active")
+    })
+    document.querySelector(`[data-calculator="${calculatorType}"]`).classList.add("active")
+
+    // Hide all calculators
+    document.querySelectorAll(".calculator").forEach((calc) => {
+      calc.classList.remove("active")
+    })
+
+    // Show selected calculator
+    document.getElementById(calculatorType).classList.add("active")
+
+    this.currentCalculator = calculatorType
+    this.updateCalculatorTitle()
+    this.closeSidebar()
+  }
+
+  updateCalculatorTitle() {
+    const titles = {
+      basic: "Basic Calculator",
+      weight: "Weight Calculator",
+      loan: "Loan Calculator",
+      percentage: "Percentage Calculator",
+      unit: "Unit Converter",
+      temperature: "Temperature Converter",
+      time: "Time Calculator",
+    }
+    document.getElementById("calculatorTitle").textContent = titles[this.currentCalculator]
+  }
+
+  // Basic Calculator Methods
+  setupBasicCalculator() {
+    // History toggle
+    document.getElementById("historyBtn").addEventListener("click", () => {
+      this.showHistory = !this.showHistory
+      const panel = document.getElementById("historyPanel")
+      if (this.showHistory) {
+        panel.classList.add("active")
+      } else {
+        panel.classList.remove("active")
+      }
+    })
+
+    // Number buttons
+    document.querySelectorAll("[data-number]").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        this.handleNumber(e.target.getAttribute("data-number"))
+      })
+    })
+
+    // Action buttons
+    document.querySelectorAll("[data-action]").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        this.handleAction(e.target.getAttribute("data-action"))
+      })
+    })
+
+    // Display click to copy
+    document.getElementById("mainDisplay").addEventListener("click", () => {
+      this.copyToClipboard(this.display)
+    })
+  }
+
+  handleNumber(num) {
+    if (this.justCalculated) {
+      this.display = num
+      this.expression = num
+      this.justCalculated = false
+    } else {
+      this.display = this.display === "0" ? num : this.display + num
+      this.expression += num
+    }
+    this.updateDisplay()
+  }
+
+  handleAction(action) {
+    switch (action) {
+      case "clear":
+        this.display = "0"
+        this.expression = ""
+        this.justCalculated = false
+        break
+      case "plusminus":
+        if (this.display !== "0") {
+          this.display = this.display.startsWith("-") ? this.display.slice(1) : "-" + this.display
+        }
+        break
+      case "percent":
+        const num = Number.parseFloat(this.display)
+        const result = num / 100
+        this.display = this.formatNumber(result)
+        this.expression += "%"
+        break
+      case "decimal":
+        if (!this.display.includes(".")) {
+          this.display += "."
+          this.expression += "."
+        }
+        break
+      case "add":
+      case "subtract":
+      case "multiply":
+      case "divide":
+        this.handleOperator(action)
+        break
+      case "equals":
+        this.handleEquals()
+        break
+    }
+    this.updateDisplay()
+  }
+
+  handleOperator(op) {
+    const operators = {
+      add: "+",
+      subtract: "−",
+      multiply: "×",
+      divide: "÷",
+    }
+
+    if (this.justCalculated) {
+      this.expression = this.display + " " + operators[op] + " "
+      this.justCalculated = false
+    } else {
+      this.expression += " " + operators[op] + " "
+    }
+    this.display = "0"
+  }
+
+  handleEquals() {
+    try {
+      const sanitizedExpression = this.expression.replace(/×/g, "*").replace(/÷/g, "/").replace(/−/g, "-")
+
+      const result = eval(sanitizedExpression)
+      const formattedResult = this.formatNumber(result)
+
+      // Add to history
+      this.history.unshift({
+        expression: this.expression,
+        result: formattedResult,
+      })
+
+      // Keep only last 10 calculations
+      this.history = this.history.slice(0, 10)
+      localStorage.setItem("calculator-history", JSON.stringify(this.history))
+      this.updateHistoryDisplay()
+
+      this.display = formattedResult
+      this.justCalculated = true
+    } catch (error) {
+      this.display = "Error"
+      this.justCalculated = true
+    }
+  }
+
+  formatNumber(num) {
+    if (num.toString().length > 10) {
+      return num.toExponential(5)
+    }
+    return num.toLocaleString()
+  }
+
+  updateDisplay() {
+    document.getElementById("mainDisplay").textContent = this.display
+    document.getElementById("expressionDisplay").textContent = this.expression || " "
+  }
+
+  updateHistoryDisplay() {
+    const historyList = document.getElementById("historyList")
+    if (this.history.length === 0) {
+      historyList.innerHTML = '<p class="no-history">No calculations yet</p>'
+    } else {
+      historyList.innerHTML = this.history
+        .map(
+          (item) => `
+                <div class="history-item">
+                    <div class="history-expression">${item.expression}</div>
+                    <div class="history-result">= ${item.result}</div>
+                </div>
+            `,
+        )
+        .join("")
+    }
+  }
+
+  copyToClipboard(text) {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text)
+    }
+  }
+
+  // Weight Calculator
+  setupWeightCalculator() {
+    document.getElementById("convertWeight").addEventListener("click", () => {
+      this.convertWeight()
+    })
+  }
+
+  convertWeight() {
+    const weight = Number.parseFloat(document.getElementById("weightInput").value)
+    const fromUnit = document.getElementById("weightFromUnit").value
+    const toUnit = document.getElementById("weightToUnit").value
+
+    if (!weight) return
+
+    const weightUnits = {
+      kg: 1,
+      lbs: 0.453592,
+      g: 0.001,
+      oz: 0.0283495,
+      stone: 6.35029,
+      ton: 1000,
+    }
+
+    const weightInKg = weight * weightUnits[fromUnit]
+    const convertedWeight = weightInKg / weightUnits[toUnit]
+
+    this.showResult("weightResult", convertedWeight.toFixed(4), this.getWeightUnitLabel(toUnit))
+  }
+
+  getWeightUnitLabel(unit) {
+    const labels = {
+      kg: "Kilograms (kg)",
+      lbs: "Pounds (lbs)",
+      g: "Grams (g)",
+      oz: "Ounces (oz)",
+      stone: "Stone",
+      ton: "Tons",
+    }
+    return labels[unit]
+  }
+
+  // Loan Calculator
+  setupLoanCalculator() {
+    document.getElementById("calculateLoan").addEventListener("click", () => {
+      this.calculateLoan()
+    })
+  }
+
+  calculateLoan() {
+    const principal = Number.parseFloat(document.getElementById("loanAmount").value)
+    const rate = Number.parseFloat(document.getElementById("interestRate").value)
+    const time = Number.parseFloat(document.getElementById("loanTerm").value)
+
+    if (!principal || !rate || !time) return
+
+    const monthlyRate = rate / 100 / 12
+    const numPayments = time * 12
+
+    let monthlyPayment, totalPayment, totalInterest
+
+    if (rate === 0) {
+      monthlyPayment = principal / numPayments
+      totalPayment = principal
+      totalInterest = 0
+    } else {
+      monthlyPayment =
+        (principal * monthlyRate * Math.pow(1 + monthlyRate, numPayments)) /
+        (Math.pow(1 + monthlyRate, numPayments) - 1)
+      totalPayment = monthlyPayment * numPayments
+      totalInterest = totalPayment - principal
+    }
+
+    this.showLoanResult(monthlyPayment, totalPayment, totalInterest)
+  }
+
+  showLoanResult(monthly, total, interest) {
+    const resultPanel = document.getElementById("loanResult")
+    resultPanel.innerHTML = `
+            <div class="result-title">Monthly Payment</div>
+            <div class="result-value">$${monthly.toFixed(2)}</div>
+            <div class="loan-results">
+                <div class="loan-result-item">
+                    <div class="loan-result-label">Total Payment</div>
+                    <div class="loan-result-value">$${total.toFixed(2)}</div>
+                </div>
+                <div class="loan-result-item">
+                    <div class="loan-result-label">Total Interest</div>
+                    <div class="loan-result-value">$${interest.toFixed(2)}</div>
+                </div>
+            </div>
+        `
+    resultPanel.classList.add("active")
+  }
+
+  // Percentage Calculator
+  setupPercentageCalculator() {
+    document.getElementById("calculatePercentage").addEventListener("click", () => {
+      this.calculatePercentage()
+    })
+
+    document.getElementById("percentageOperation").addEventListener("change", () => {
+      this.updatePercentageLabels()
+    })
+
+    this.updatePercentageLabels()
+  }
+
+  updatePercentageLabels() {
+    const operation = document.getElementById("percentageOperation").value
+    const label1 = document.getElementById("percentageLabel1")
+    const label2 = document.getElementById("percentageLabel2")
+
+    const labels = {
+      percentage: { p1: "Percentage", p2: "Number" },
+      percent_of: { p1: "Number", p2: "Total" },
+      percent_change: { p1: "Original", p2: "New" },
+      add_percent: { p1: "Percentage", p2: "Number" },
+      subtract_percent: { p1: "Percentage", p2: "Number" },
+    }
+
+    label1.textContent = labels[operation].p1
+    label2.textContent = labels[operation].p2
+  }
+
+  calculatePercentage() {
+    const value1 = Number.parseFloat(document.getElementById("percentageValue1").value)
+    const value2 = Number.parseFloat(document.getElementById("percentageValue2").value)
+    const operation = document.getElementById("percentageOperation").value
+
+    if (!value1 || !value2) return
+
+    let result = 0
+    let isPercentage = false
+
+    switch (operation) {
+      case "percentage":
+        result = (value1 / 100) * value2
+        break
+      case "percent_of":
+        result = (value1 / value2) * 100
+        isPercentage = true
+        break
+      case "percent_change":
+        result = ((value2 - value1) / value1) * 100
+        isPercentage = true
+        break
+      case "add_percent":
+        result = value2 + (value1 / 100) * value2
+        break
+      case "subtract_percent":
+        result = value2 - (value1 / 100) * value2
+        break
+    }
+
+    this.showResult("percentageResult", result.toFixed(2) + (isPercentage ? "%" : ""), "")
+  }
+
+  // Unit Converter
+  setupUnitConverter() {
+    document.getElementById("convertUnit").addEventListener("click", () => {
+      this.convertUnit()
+    })
+  }
+
+  convertUnit() {
+    const value = Number.parseFloat(document.getElementById("unitValue").value)
+    const fromUnit = document.getElementById("unitFromUnit").value
+    const toUnit = document.getElementById("unitToUnit").value
+
+    if (!value) return
+
+    const lengthUnits = {
+      m: 1,
+      ft: 0.3048,
+      in: 0.0254,
+      cm: 0.01,
+      mm: 0.001,
+      km: 1000,
+      yd: 0.9144,
+      mi: 1609.34,
+    }
+
+    const meters = value * lengthUnits[fromUnit]
+    const convertedValue = meters / lengthUnits[toUnit]
+
+    this.showResult("unitResult", convertedValue.toFixed(6), this.getUnitLabel(toUnit))
+  }
+
+  getUnitLabel(unit) {
+    const labels = {
+      m: "Meters (m)",
+      ft: "Feet (ft)",
+      in: "Inches (in)",
+      cm: "Centimeters (cm)",
+      mm: "Millimeters (mm)",
+      km: "Kilometers (km)",
+      yd: "Yards (yd)",
+      mi: "Miles (mi)",
+    }
+    return labels[unit]
+  }
+
+  // Temperature Converter
+  setupTemperatureConverter() {
+    document.getElementById("convertTemperature").addEventListener("click", () => {
+      this.convertTemperature()
+    })
+  }
+
+  convertTemperature() {
+    const temp = Number.parseFloat(document.getElementById("temperatureValue").value)
+    const fromUnit = document.getElementById("temperatureFromUnit").value
+    const toUnit = document.getElementById("temperatureToUnit").value
+
+    if (temp === undefined || temp === null || isNaN(temp)) return
+
+    let celsius = temp
+
+    // Convert to Celsius first
+    switch (fromUnit) {
+      case "fahrenheit":
+        celsius = ((temp - 32) * 5) / 9
+        break
+      case "kelvin":
+        celsius = temp - 273.15
+        break
+      case "rankine":
+        celsius = ((temp - 491.67) * 5) / 9
+        break
+    }
+
+    // Convert from Celsius to target unit
+    let convertedTemp = celsius
+    switch (toUnit) {
+      case "fahrenheit":
+        convertedTemp = (celsius * 9) / 5 + 32
+        break
+      case "kelvin":
+        convertedTemp = celsius + 273.15
+        break
+      case "rankine":
+        convertedTemp = ((celsius + 273.15) * 9) / 5
+        break
+    }
+
+    this.showResult("temperatureResult", convertedTemp.toFixed(2) + "°", this.getTemperatureUnitLabel(toUnit))
+  }
+
+  getTemperatureUnitLabel(unit) {
+    const labels = {
+      celsius: "Celsius (°C)",
+      fahrenheit: "Fahrenheit (°F)",
+      kelvin: "Kelvin (K)",
+      rankine: "Rankine (°R)",
+    }
+    return labels[unit]
+  }
+
+  // Time Calculator
+  setupTimeCalculator() {
+    document.getElementById("calculateTime").addEventListener("click", () => {
+      this.calculateTime()
+    })
+  }
+
+  calculateTime() {
+    const hours1 = Number.parseInt(document.getElementById("time1Hours").value) || 0
+    const minutes1 = Number.parseInt(document.getElementById("time1Minutes").value) || 0
+    const seconds1 = Number.parseInt(document.getElementById("time1Seconds").value) || 0
+
+    const hours2 = Number.parseInt(document.getElementById("time2Hours").value) || 0
+    const minutes2 = Number.parseInt(document.getElementById("time2Minutes").value) || 0
+    const seconds2 = Number.parseInt(document.getElementById("time2Seconds").value) || 0
+
+    const operation = document.getElementById("timeOperation").value
+
+    const time1Seconds = hours1 * 3600 + minutes1 * 60 + seconds1
+    const time2Seconds = hours2 * 3600 + minutes2 * 60 + seconds2
+
+    let resultSeconds = 0
+    if (operation === "add") {
+      resultSeconds = time1Seconds + time2Seconds
+    } else {
+      resultSeconds = Math.abs(time1Seconds - time2Seconds)
+    }
+
+    const hours = Math.floor(resultSeconds / 3600)
+    const minutes = Math.floor((resultSeconds % 3600) / 60)
+    const seconds = resultSeconds % 60
+
+    const formattedTime = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`
+
+    this.showResult("timeResult", formattedTime, "HH:MM:SS")
+  }
+
+  // Utility method to show results
+  showResult(elementId, value, unit) {
+    const resultPanel = document.getElementById(elementId)
+    resultPanel.innerHTML = `
+            <div class="result-title">Result</div>
+            <div class="result-value">${value}</div>
+            ${unit ? `<div class="result-unit">${unit}</div>` : ""}
+        `
+    resultPanel.classList.add("active")
+    resultPanel.classList.add("fade-in")
+  }
+}
+
+// Initialize the app when DOM is loaded
+document.addEventListener("DOMContentLoaded", () => {
+  new CalculatorApp()
+})
+
+// Prevent context menu on long press
+document.addEventListener("contextmenu", (e) => {
+  e.preventDefault()
+})
+
+// Prevent text selection
+document.addEventListener("selectstart", (e) => {
+  if (e.target.tagName !== "INPUT") {
+    e.preventDefault()
+  }
+})
+
+    </script>
+     
 </body>
 </html>
