@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Calculator Suite - Developed by Jagdeesh Dubey</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Background Decoration -->
+    <div class="bg-decoration">
+        <div class="bg-circle bg-circle-1"></div>
+        <div class="bg-circle bg-circle-2"></div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>Calculator Suite</h2>
+            <button class="close-btn" id="closeSidebar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="menu-items">
+            <button class="menu-item active" data-calculator="basic">
+                <i class="fas fa-calculator"></i>
+                <span>Basic Calculator</span>
+            </button>
+            <button class="menu-item" data-calculator="weight">
+                <i class="fas fa-weight"></i>
+                <span>Weight Calculator</span>
+            </button>
+            <button class="menu-item" data-calculator="loan">
+                <i class="fas fa-dollar-sign"></i>
+                <span>Loan Calculator</span>
+            </button>
+            <button class="menu-item" data-calculator="percentage">
+                <i class="fas fa-percent"></i>
+                <span>Percentage Calculator</span>
+            </button>
+            <button class="menu-item" data-calculator="unit">
+                <i class="fas fa-ruler"></i>
+                <span>Unit Converter</span>
+            </button>
+            <button class="menu-item" data-calculator="temperature">
+                <i class="fas fa-thermometer-half"></i>
+                <span>Temperature Converter</span>
+            </button>
+            <button class="menu-item" data-calculator="time">
+                <i class="fas fa-clock"></i>
+                <span>Time Calculator</span>
+            </button>
+        </div>
+
+        <div class="sidebar-footer">
+            <button class="footer-btn" id="themeToggle">
+                <i class="fas fa-moon" id="themeIcon"></i>
+                <span id="themeText">Dark Mode</span>
+            </button>
+            <button class="footer-btn">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </button>
+            <div class="developer-info">
+                <div class="developer-header">
+                    <i class="fas fa-user"></i>
+                    <span>Developer</span>
+                </div>
+                <p>Developed by Jagdeesh Dubey</p>
+                <div class="version-info">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Version 1.0.0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <button class="menu-btn" id="menuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1 id="calculatorTitle">Basic Calculator</h1>
+            <div class="spacer"></div>
+        </div>
+
+        <!-- Calculator Container -->
+        <div class="calculator-container">
+            <!-- Basic Calculator -->
+            <div class="calculator basic-calculator active" id="basic">
+                <div class="calculator-card">
+                    <div class="calculator-header">
+                        <button class="history-btn" id="historyBtn">
+                            <i class="fas fa-history"></i>
+                        </button>
+                    </div>
+
+                    <div class="history-panel" id="historyPanel">
+                        <h3>History</h3>
+                        <div class="history-list" id="historyList">
+                            <p class="no-history">No calculations yet</p>
+                        </div>
+                    </div>
+
+                    <div class="expression-display" id="expressionDisplay"> </div>
+                    <div class="main-display" id="mainDisplay">0</div>
+
+                    <div class="button-grid">
+                        <button class="calc-btn function-btn" data-action="clear">AC</button>
+                        <button class="calc-btn function-btn" data-action="plusminus">±</button>
+                        <button class="calc-btn function-btn" data-action="percent">%</button>
+                        <button class="calc-btn operator-btn" data-action="divide">÷</button>
+
+                        <button class="calc-btn number-btn" data-number="7">7</button>
+                        <button class="calc-btn number-btn" data-number="8">8</button>
+                        <button class="calc-btn number-btn" data-number="9">9</button>
+                        <button class="calc-btn operator-btn" data-action="multiply">×</button>
+
+                        <button class="calc-btn number-btn" data-number="4">4</button>
+                        <button class="calc-btn number-btn" data-number="5">5</button>
+                        <button class="calc-btn number-btn" data-number="6">6</button>
+                        <button class="calc-btn operator-btn" data-action="subtract">−</button>
+
+                        <button class="calc-btn number-btn" data-number="1">1</button>
+                        <button class="calc-btn number-btn" data-number="2">2</button>
+                        <button class="calc-btn number-btn" data-number="3">3</button>
+                        <button class="calc-btn operator-btn" data-action="add">+</button>
+
+                        <button class="calc-btn number-btn zero-btn" data-number="0">0</button>
+                        <button class="calc-btn function-btn" data-action="decimal">.</button>
+                        <button class="calc-btn equals-btn" data-action="equals">=</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weight Calculator -->
+            <div class="calculator weight-calculator" id="weight">
+                <div class="calculator-card">
+                    <div class="input-group">
+                        <label>Weight</label>
+                        <input type="number" id="weightInput" placeholder="Enter weight">
+                    </div>
+                    <div class="input-group">
+                        <label>From</label>
+                        <select id="weightFromUnit">
+                            <option value="kg">Kilograms (kg)</option>
+                            <option value="lbs">Pounds (lbs)</option>
+                            <option value="g">Grams (g)</option>
+                            <option value="oz">Ounces (oz)</option>
+                            <option value="stone">Stone</option>
+                            <option value="ton">Tons</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>To</label>
+                        <select id="weightToUnit">
+                            <option value="lbs">Pounds (lbs)</option>
+                            <option value="kg">Kilograms (kg)</option>
+                            <option value="g">Grams (g)</option>
+                            <option value="oz">Ounces (oz)</option>
+                            <option value="stone">Stone</option>
+                            <option value="ton">Tons</option>
+                        </select>
+                    </div>
+                    <button class="convert-btn" id="convertWeight">Convert</button>
+                    <div class="result-panel" id="weightResult"></div>
+                </div>
+            </div>
+
+            <!-- Loan Calculator -->
+            <div class="calculator loan-calculator" id="loan">
+                <div class="calculator-card">
+                    <div class="input-group">
+                        <label>Loan Amount ($)</label>
+                        <input type="number" id="loanAmount" placeholder="Enter loan amount">
+                    </div>
+                    <div class="input-group">
+                        <label>Annual Interest Rate (%)</label>
+                        <input type="number" id="interestRate" placeholder="Enter interest rate" step="0.01">
+                    </div>
+                    <div class="input-group">
+                        <label>Loan Term (Years)</label>
+                        <input type="number" id="loanTerm" placeholder="Enter loan term">
+                    </div>
+                    <button class="convert-btn" id="calculateLoan">Calculate</button>
+                    <div class="result-panel" id="loanResult"></div>
+                </div>
+            </div>
+
+            <!-- Percentage Calculator -->
+            <div class="calculator percentage-calculator" id="percentage">
+                <div class="calculator-card">
+                    <div class="input-group">
+                        <label>Operation</label>
+                        <select id="percentageOperation">
+                            <option value="percentage">What is X% of Y?</option>
+                            <option value="percent_of">X is what % of Y?</option>
+                            <option value="percent_change">% change from X to Y</option>
+                            <option value="add_percent">Add X% to Y</option>
+                            <option value="subtract_percent">Subtract X% from Y</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label id="percentageLabel1">Percentage</label>
+                        <input type="number" id="percentageValue1" placeholder="Enter percentage">
+                    </div>
+                    <div class="input-group">
+                        <label id="percentageLabel2">Number</label>
+                        <input type="number" id="percentageValue2" placeholder="Enter number">
+                    </div>
+                    <button class="convert-btn" id="calculatePercentage">Calculate</button>
+                    <div class="result-panel" id="percentageResult"></div>
+                </div>
+            </div>
+
+            <!-- Unit Converter -->
+            <div class="calculator unit-calculator" id="unit">
+                <div class="calculator-card">
+                    <div class="input-group">
+                        <label>Value</label>
+                        <input type="number" id="unitValue" placeholder="Enter value">
+                    </div>
+                    <div class="input-group">
+                        <label>From</label>
+                        <select id="unitFromUnit">
+                            <option value="m">Meters (m)</option>
+                            <option value="ft">Feet (ft)</option>
+                            <option value="in">Inches (in)</option>
+                            <option value="cm">Centimeters (cm)</option>
+                            <option value="mm">Millimeters (mm)</option>
+                            <option value="km">Kilometers (km)</option>
+                            <option value="yd">Yards (yd)</option>
+                            <option value="mi">Miles (mi)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>To</label>
+                        <select id="unitToUnit">
+                            <option value="ft">Feet (ft)</option>
+                            <option value="m">Meters (m)</option>
+                            <option value="in">Inches (in)</option>
+                            <option value="cm">Centimeters (cm)</option>
+                            <option value="mm">Millimeters (mm)</option>
+                            <option value="km">Kilometers (km)</option>
+                            <option value="yd">Yards (yd)</option>
+                            <option value="mi">Miles (mi)</option>
+                        </select>
+                    </div>
+                    <button class="convert-btn" id="convertUnit">Convert</button>
+                    <div class="result-panel" id="unitResult"></div>
+                </div>
+            </div>
+
+            <!-- Temperature Converter -->
+            <div class="calculator temperature-calculator" id="temperature">
+                <div class="calculator-card">
+                    <div class="input-group">
+                        <label>Temperature</label>
+                        <input type="number" id="temperatureValue" placeholder="Enter temperature">
+                    </div>
+                    <div class="input-group">
+                        <label>From</label>
+                        <select id="temperatureFromUnit">
+                            <option value="celsius">Celsius (°C)</option>
+                            <option value="fahrenheit">Fahrenheit (°F)</option>
+                            <option value="kelvin">Kelvin (K)</option>
+                            <option value="rankine">Rankine (°R)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>To</label>
+                        <select id="temperatureToUnit">
+                            <option value="fahrenheit">Fahrenheit (°F)</option>
+                            <option value="celsius">Celsius (°C)</option>
+                            <option value="kelvin">Kelvin (K)</option>
+                            <option value="rankine">Rankine (°R)</option>
+                        </select>
+                    </div>
+                    <button class="convert-btn" id="convertTemperature">Convert</button>
+                    <div class="result-panel" id="temperatureResult"></div>
+                </div>
+            </div>
+
+            <!-- Time Calculator -->
+            <div class="calculator time-calculator" id="time">
+                <div class="calculator-card">
+                    <div class="input-group">
+                        <label>Operation</label>
+                        <select id="timeOperation">
+                            <option value="add">Add Time</option>
+                            <option value="subtract">Subtract Time</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Time 1</label>
+                        <div class="time-inputs">
+                            <input type="number" id="time1Hours" placeholder="HH" min="0">
+                            <input type="number" id="time1Minutes" placeholder="MM" min="0" max="59">
+                            <input type="number" id="time1Seconds" placeholder="SS" min="0" max="59">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Time 2</label>
+                        <div class="time-inputs">
+                            <input type="number" id="time2Hours" placeholder="HH" min="0">
+                            <input type="number" id="time2Minutes" placeholder="MM" min="0" max="59">
+                            <input type="number" id="time2Seconds" placeholder="SS" min="0" max="59">
+                        </div>
+                    </div>
+                    <button class="convert-btn" id="calculateTime">Calculate</button>
+                    <div class="result-panel" id="timeResult"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
